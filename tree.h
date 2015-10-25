@@ -6,4 +6,18 @@ typedef struct tree{
 	struct tree *first, *actual, *last;
 } tree;
 
-tree *initTree(void *data);
+extern tree *treenew(void *data);
+
+extern tree *treeaddfirst(tree *node, tree *data);
+
+extern tree *push(tree *node, void *data);
+
+extern tree *pop(tree *node);
+
+extern tree *rem(tree *item);
+
+extern void deltree(tree *node);
+
+extern void delnodes(tree *node);
+
+extern void (*datafree)(void*);

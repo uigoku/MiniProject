@@ -3,20 +3,20 @@
 
 //The Identification Values of each type of Players
 //Positive is for the White Player and Negative is for the Opponent
-#define CH_EMP 0
-#define CH_PAWN 1
-#define CH_BLACK_PAWN -1
-#define CH_KNIGHT 2
-#define CH_BLACK_KNIGHT -2
-#define CH_BISHOP 3
-#define CH_BLACK_BISHOP -3
-#define CH_ROOK 4
-#define CH_BLACK_ROOK -4
-#define CH_QUEEN 5
-#define CH_BLACK_QUEEN -5
-#define CH_KING 6
-#define CH_BLACK_KING -6
-#define CH_BORDER 100
+#define CEMP 0
+#define CPAWN 1
+#define CBLACK_PAWN -1
+#define CKNIGHT 2
+#define CBLACK_KNIGHT -2
+#define CBISHOP 3
+#define CBLACK_BISHOP -3
+#define CROOK 4
+#define CBLACK_ROOK -4
+#define CQUEEN 5
+#define CBLACK_QUEEN -5
+#define CKING 6
+#define CBLACK_KING -6
+#define CBORDER 100
 
 //Their values
 #define PAWN 100
@@ -32,75 +32,95 @@
 #define KING 12000
 #define BLACK_KING 12000
 
-#define CH_A1 21
-#define CH_A2 31
-#define CH_A3 41
-#define CH_A4 51
-#define CH_A5 61
-#define CH_A6 71
-#define CH_A7 81
-#define CH_A8 91
-#define CH_B1 22
-#define CH_B2 32
-#define CH_B3 42
-#define CH_B4 52
-#define CH_B5 62
-#define CH_B6 72
-#define CH_B7 82
-#define CH_B8 92
-#define CH_C1 23
-#define CH_C2 33
-#define CH_C3 43
-#define CH_C4 53
-#define CH_C5 63
-#define CH_C6 73
-#define CH_C7 83
-#define CH_C8 93
-#define CH_D1 24
-#define CH_D2 34
-#define CH_D3 44
-#define CH_D4 54
-#define CH_D5 64
-#define CH_D6 74
-#define CH_D7 84
-#define CH_D8 94
-#define CH_E1 25
-#define CH_E2 35
-#define CH_E3 45
-#define CH_E4 55
-#define CH_E5 65
-#define CH_E6 75
-#define CH_E7 85
-#define CH_E8 95
-#define CH_F1 26
-#define CH_F2 36
-#define CH_F3 46
-#define CH_F4 56
-#define CH_F5 66
-#define CH_F6 76
-#define CH_F7 86
-#define CH_F8 96
-#define CH_G1 27
-#define CH_G2 37
-#define CH_G3 47
-#define CH_G4 57
-#define CH_G5 67
-#define CH_G6 77
-#define CH_G7 87
-#define CH_G8 97
-#define CH_H1 28
-#define CH_H2 38
-#define CH_H3 48
-#define CH_H4 58
-#define CH_H5 68
-#define CH_H6 78
-#define CH_H7 88
-#define CH_H8 98
+#define A1 21
+#define A2 31
+#define A3 41
+#define A4 51
+#define A5 61
+#define A6 71
+#define A7 81
+#define A8 91
+#define B1 22
+#define B2 32
+#define B3 42
+#define B4 52
+#define B5 62
+#define B6 72
+#define B7 82
+#define B8 92
+#define C1 23
+#define C2 33
+#define C3 43
+#define C4 53
+#define C5 63
+#define C6 73
+#define C7 83
+#define C8 93
+#define D1 24
+#define D2 34
+#define D3 44
+#define D4 54
+#define D5 64
+#define D6 74
+#define D7 84
+#define D8 94
+#define E1 25
+#define E2 35
+#define E3 45
+#define E4 55
+#define E5 65
+#define E6 75
+#define E7 85
+#define E8 95
+#define F1 26
+#define F2 36
+#define F3 46
+#define F4 56
+#define F5 66
+#define F6 76
+#define F7 86
+#define F8 96
+#define G1 27
+#define G2 37
+#define G3 47
+#define G4 57
+#define G5 67
+#define G6 77
+#define G7 87
+#define G8 97
+#define H1 28
+#define H2 38
+#define H3 48
+#define H4 58
+#define H5 68
+#define H6 78
+#define H7 88
+#define H8 98
 
 //colours
-#define CH_WHITE 1
-#define CH_BLACK -1
+#define CWHITE 1
+#define CBLACK -1
 
 //boolean
-#define CH_TRUE 1
-#define CH_FALSE 0
+#define CTRUE 1
+#define CFALSE 0
+
+//Movements
+#define DIAG 1
+#define VH 2
+#define KM 4
+#define PM 8
+#define WHITE_BASE_LINE 30
+#define BLACK_LINE_80
+#define WHITE_CHANGE_LINE 90
+#define BLACK_CHANGE_LINE 20
+
+//Flags
+#define TEST 0
+#define DO_IT 1
+#define HUMAN 0
+#define CPU 1
+
+#define GET_COLOR(x) (((x)<0)?CBLACK:CWHITE)
+
+#endif
