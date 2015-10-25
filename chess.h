@@ -3,6 +3,22 @@
 
 #include"tree.h"
 
+//Macros for initializing of figures
+#define figinit(fig, typ, val, pos, mov, multi) \
+	(fig).type = (char)(typ); \
+	(fig).value = (int)(val); \
+	(fig).position = (char)(pos); \
+	(fig).move = (char)(mov); \
+	(fig).multiply = (char)(multi)
+
+#define figset(b, f) ((b)[(int)(f)->position].figure != NULL || \
+	(b)[(int)(f)->position].value == CH_BORDER || \
+	(f)->position < 0 || (f)->position > 119) ? \
+	(b)[(int)(f)->position].figure : \
+	((b)[(int)(f)->position].figure = f)
+
+#define errprint() if (cerror!=NOERR) printerror()
+
 typedef int player;
 
 //CHECK HERE !!!!!!!!!!!!!!!!!!!!

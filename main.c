@@ -8,12 +8,12 @@
 int main(int argc, char **argv){
 	cboard board;
 	
-	ch_board_init(&board);
+	initboard(&board);
 	
 	srandom(time(NULL));
-	ch_game_start(&board);
-	ch_error_print();
-	ch_board_done(&board);
+	startgame(&board);
+	printerror();
+	doneboard(&board);
 	
 	return 0;
 }
