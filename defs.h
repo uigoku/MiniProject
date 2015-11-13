@@ -117,7 +117,7 @@
 
 //Flags
 #define TEST 0
-#define DO_IT 1
+#define DOIT 1
 #define HUMAN 0
 #define CPU 1
 

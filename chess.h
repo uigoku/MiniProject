@@ -35,7 +35,7 @@ typedef struct cfield{
 	cfig *fig;
 	char value;
 	int danger; //whether the field is safe or not
-}
+}cfield;
 
 typedef struct cboard{
 	cfig white[16]; //for white pieces
@@ -61,14 +61,14 @@ typedef enum{
 //CHECK HERE !!!!!!!!!!!!!!!!!!!!
 extern enumerror cerror;
 
-cboard initboard(cboard *board);
+extern cboard initboard(cboard *board);
 
-void doneboard(cboard *board);
+extern void doneboard(cboard *board);
 
-void startgame(cboard *board);
+extern void startgame(cboard *board);
 
-cfig* cfigmove(cboard *board, char src, char target, int flag);
+extern inline cfig* cfigmove(cboard *board, char src, char target, int flag);
 
-void undomove(cboard *board);
+extern void undomove(cboard *board);
 
 #endif
