@@ -43,8 +43,8 @@ typedef struct cboard{
 	cfig board[120]; //chessboard
 	char move;
 	
-	player whitep;
-	player blackp;
+	player wp;
+	player bp;
 	player pl;
 	
 	int cost;
