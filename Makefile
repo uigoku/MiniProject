@@ -1,5 +1,5 @@
-chess:chess.o gen.o io.o main.o tree.o
-	cc main.o gen.o io.o tree.o -o chess
+project:chess.o gen.o io.o main.o tree.o
+	cc main.o gen.o io.o tree.o -o project
 
 main.o:main.c chess.h
 	cc -c main.c
