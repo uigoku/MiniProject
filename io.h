@@ -1,3 +1,6 @@
+#ifndef __CH_IO_H__
+#define __CH_IO_H__
+
 #include"chess.h"
 #define CH_MAX_MOV_LEN 80
 
@@ -20,3 +23,5 @@ extern void printfigval(cboard *board);
 
 //lists the type of black and white figures
 extern void figprint(cboard *board);
+
+#endif

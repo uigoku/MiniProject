@@ -4,11 +4,11 @@
 #include"tree.h"
 
 //Macros for initializing of figures
-#define figinit(fig, typ, val, pos, mov, multi) \
+#define fig_init(fig, typ, val, pos, mov, multi) \
 	(fig).type = (char)(typ); \
 	(fig).value = (int)(val); \
 	(fig).position = (char)(pos); \
-	(fig).move = (char)(mov); \
+	(fig).cmove = (char)(mov); \
 	(fig).multiply = (char)(multi)
 
 #define figset(b, f) ((b)[(int)(f)->position].figure != NULL || \
@@ -21,16 +21,15 @@
 
 typedef int player;
 
-//CHECK HERE !!!!!!!!!!!!!!!!!!!!
+//structure describing the piece
 typedef struct cfig{
-	char type;
-	int value;
-	char position;
-	char move;
-	char multiply;
+	char type;	//the type of the figure
+	int value;	//its value
+	char position;	//current or latest position
+	char cmove;
+	char multiply;	//if multiple steps are taken
 }
 
-//CHECK HERE !!!!!!!!!!!!!!!!!!!!
 typedef struct cfield{
 	cfig *fig;
 	char value;
@@ -41,7 +40,7 @@ typedef struct cboard{
 	cfig white[16]; //for white pieces
 	cfig black[16]; //for black pieces
 	cfig board[120]; //chessboard
-	char move;
+	char cmove;
 	
 	player wp;
 	player bp;
@@ -58,7 +57,6 @@ typedef enum{
 	NOERR, NOMEM, POINTERNULL, ILLEGAL, ENDOF
 }enumerror;
 
-//CHECK HERE !!!!!!!!!!!!!!!!!!!!
 extern enumerror cerror;
 
 extern cboard initboard(cboard *board);
@@ -67,8 +65,8 @@ extern void doneboard(cboard *board);
 
 extern void startgame(cboard *board);
 
-extern inline cfig* cfigmove(cboard *board, char src, char target, int flag);
+extern inline cfig* cfigcmove(cboard *board, char src, char target, int flag);
 
-extern void undomove(cboard *board);
+extern void undocmove(cboard *board);
 
 #endif

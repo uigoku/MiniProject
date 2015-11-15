@@ -1,3 +1,6 @@
+#ifndef __TREE_H__
+#define __TREE_H__
+
 typedef struct tree{
 	void *data;
 	struct tree *root;
@@ -21,3 +24,5 @@ extern void deltree(tree *node);
 extern void delnodes(tree *node);
 
 extern void (*datafree)(void*);
+
+#endif

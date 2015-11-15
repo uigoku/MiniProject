@@ -105,7 +105,7 @@
 #define CTRUE 1
 #define CFALSE 0
 
-//Movements
+//movements
 #define DIAG 1
 #define VH 2
 #define KM 4

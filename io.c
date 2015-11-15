@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 
 #include"io.h"
 #include"chess.h"
@@ -55,7 +56,7 @@ char *getmove(char *src, char *trg){
 
 void printbfp(ch_board* board){
 	
-	int i = 0, j = 0;
+	int i = 0, j = 0, count = 0;
 
 	cerror = NOERR;
 
@@ -71,13 +72,22 @@ void printbfp(ch_board* board){
 	for(j = 90; j > 10; j -= 10){
 		printf("%d|", (j/10) - 1);
 		for(i = 1; i < 9; i++)
-			(board->board[j+i].figure != NULL) ?
-				printf("%3d |", (int)board->board[j+i].figure->type) :
+			if(board->board[j+i].figure != NULL){
+				printf("%3d |", (int)board->board[j+i].figure->type);
+				if((int)board->board[j + i].figure->type == 6 || (int)board->board[j + i].figure->type == -6)
+					count++;
+				}
+			else{
 				printf("    |");
+			}
 		printf("%d\n", (j/10) -1);
 		printf("-------------------------------------------\n");
 	}
 	printf("    a    b    c    d    e    f    g    h\n");
+	if(count != 2){
+		printf("GAME OVER !!!!!!!!\n GO HOME !\N");
+		exit(0);
+	}
 }
 
 void printmoves(cboard* board){
@@ -91,7 +101,7 @@ void printmoves(cboard* board){
 	board->node->actual = board->node->first;
 	while(board->node->actual != NULL){
 		mve = (move*)(board->node->actual->data);
-		printf("F%d,S%d,T%d,C%d,", board->board[(int)mve->src].figure->type, mve->src, mve->trg, mve->cost);
+		printf("\nF%d,S%d,T%d,C%d,", board->board[(int)mve->src].figure->type, mve->src, mve->trg, mve->cost);
 		if(mve->take != NULL){
 			printf("take%d; ", move->take->type);
 		}

@@ -1,3 +1,6 @@
+#ifndef __CH_GENERATOR_H_
+#define __CH_GENERATOR_H_
+
 #include"chess.h"
 
 typedef struct cmove{
@@ -22,3 +25,5 @@ extern void gencost(cboard *board);
 extern void gencosts(cboard *board);
 
 extern tree *genplay(cboard *board, char *s, char *t);
+
+#endif

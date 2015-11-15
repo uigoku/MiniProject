@@ -4,12 +4,11 @@
 #include "tree.h"
 #include "gen.h"
 #include "defs.h"
-#include "list.h"
 #include "io.h"
 
 extern char coffset[] = {
-	-9, -11, 9, 11,	// 0, 1, 2, 3, diagonal move
-	-1, 10, 1, -10,	//4, 5, 6, 7, horizontal and vertical move
+	-9, -11, 9, 11,	// 0, 1, 2, 3, diagonal cmove
+	-1, 10, 1, -10,	//4, 5, 6, 7, horizontal and vertical cmove
 	19, 21, 12, -8, -19, -21, -12, 8, //8, 9, 10, 11, 12, 13, 14, 15 knight
 	10,
 	20,
@@ -21,34 +20,38 @@ extern char coffset[] = {
 	-9
 };
 
-void gendangers(cboard board){
+void gendangers(cboard *board){
 	int i;
 	cfig *figure = NULL;
 	
-	if(board == NULL || board->node){
+	if(board == NULL || board->node == NULL){
 		cerror = POINTERNULL;
 		return;
 	}
 	
-	figure = (board->move == CWHITE) ? board->white : board->black;
+	figure = (board->cmove == CWHITE) ? board->white : board->black;
 	
+	//clearing current status
 	for(i = 0; i < 120; i++)
 		board->board[i].danger = 0;
 	
 	board->node->actual = board->node->first;
 	
 	while(board->node->actual != NULL){
-		board->board[(int)((move *)(board->node->actual->data))->trg].danger = board->move;
+		board->board[(int)((cmove *)(board->node->actual->data))->trg].danger = board->cmove;
+		
+		board->node->actual = board->node->actual->next;
 
 	}
 }
 
-void genmoves(cboard board){
+//generates all possible positions for all possible cmoves
+void gencmoves(cboard *board){
 	int start = 0, end = 0, i = 0, j = 0;
 	char typ = 0;
 	cfig *ret = NULL;
 	cfig *figure = NULL;
-	move *mve = NULL;
+	cmove *mve = NULL;
 	
 	cerror = NOERR;
 	
@@ -60,9 +63,9 @@ void genmoves(cboard board){
 	if(board->node->first != NULL)
 		return;
 #ifdef DEBUG
-	printf("Searching for Legal Moves for %d\n", board->move);
+	printf("Searching for Legal cmoves for %d\n", board->cmove);
 #endif
-	figure = (board->move == CWHITE) ? board->white : board->black;
+	figure = (board->cmove == CWHITE) ? board->white : board->black;
 	
 	for(i = 0; i < 16; i++){
 		int multi = 1;
@@ -84,15 +87,15 @@ void genmoves(cboard board){
 				cerror = NOERR;
 				
 				do{
-					ret = cfigmove(board->board, figure[i], figure[io\].position + coffset[j] * multi, TEST);
+					ret = cfigcmove(board->board, figure[i], figure[io\].position + coffset[j] * multi, TEST);
 					
 					if(cerror = NOERR){
-						mve = (move *)malloc(sizeof(move));
+						mve = (cmove *)malloc(sizeof(cmove));
 						
 						if(mve == NULL){
 							cerror = NOMEM;
 #ifdef DEBUG
-							printf("\n\nIn ch_gen_moves();\nLine: 68\nTyp: %d\nch_error == %d\n\n", typ, ch_error);
+							printf("\n\nIn ch_gen_cmoves();\nLine: 68\nTyp: %d\nch_error == %d\n\n", typ, ch_error);
 #endif
 							return;
 						}
@@ -111,7 +114,7 @@ void genmoves(cboard board){
 					}
 					else if(cerror != ILLEGAL){
 #ifdef DEBUG
-						printf("\n\nIn genmoves();\nLine: 68\nTyp: %d\ncerror == %d\n\n", typ, cerror);
+						printf("\n\nIn gencmoves();\nLine: 68\nTyp: %d\ncerror == %d\n\n", typ, cerror);
 #endif
 						return;
 					}
@@ -133,14 +136,14 @@ void genmoves(cboard board){
 				fwt2 = (figure[i].type > 0) ? 19 : 23,
 				basln = (figure[i].type > 0) ? tmppos - CH_WHITE_BASE_LINE : tmppos - CH_BLACK_BASE_LINE;
 				
-			ret = cfigmove(board->board, tmppos, tmppos + coffset[fw], TEST);
+			ret = cfigcmove(board->board, tmppos, tmppos + coffset[fw], TEST);
 			if(cerror == NOERR && ret == NULL){
 				
-				mve = (move *)malloc(sizeof(move));
+				mve = (cmove *)malloc(sizeof(cmove));
 				
 				if(mve == NULL){
 					cerror = NOMEM;
-					printf("\n\nIn genmoves();\ntypL %d\nmve == NULL\n\n", typ);
+					printf("\n\nIn gencmoves();\ntypL %d\nmve == NULL\n\n", typ);
 				}
 				
 				mve->sc = tmppos;
@@ -151,25 +154,25 @@ void genmoves(cboard board){
 				
 				push(board->node, (void *)mve);
 #ifdef DEBUG
-				printf("F%dS%dT%dC%d,",typ,move->src, move->trg, move->cost);
+				printf("F%dS%dT%dC%d,",typ,cmove->src, cmove->trg, cmove->cost);
 #endif
 
 			}
 			else if(cerror != NOERR && cerror != ILLEGAL){
-				printf("\n\nIn genmoves();\nLine: 100\nTyp: %d\nch_error == %d\n\n", typ, cerror);
+				printf("\n\nIn gencmoves();\nLine: 100\nTyp: %d\nch_error == %d\n\n", typ, cerror);
 				return;
 			}
 			
 			if(basln < 10 && basln > 0 && board->board[tmppos + coffset[fw]].figure == NULL){
 				
-				ret = cfigmove(board->board, tmppos, tmppos + coffset[fw2], TEST);
+				ret = cfigcmove(board->board, tmppos, tmppos + coffset[fw2], TEST);
 				
 				if(cerror == NOERR && ret == NULL){
 					
-					mve = (move *)malloc((sizeof(move));
+					mve = (cmove *)malloc((sizeof(cmove));
 					if(mve = NULL){
 						cerror = NOMEM;
-						printf("\n\nIn genmoves();\nTyp: %d\ncerror == %d\nin 0<basln<10", typ, cerror);
+						printf("\n\nIn gencmoves();\nTyp: %d\ncerror == %d\nin 0<basln<10", typ, cerror);
 						return;
 					}
 					mve->src = tmppos;
@@ -180,25 +183,25 @@ void genmoves(cboard board){
 					
 					push(board->node, (void *)mve);
 #ifdef DEBUG
-					printf("F%dS%dT%dC%d,",typ,move->src, move->trg, move->cost);
+					printf("F%dS%dT%dC%d,",typ,cmove->src, cmove->trg, cmove->cost);
 #endif
 					
 				}
 				else if(cerror != NOERR && cerror != ILLEGAL){
-					printf("\n\nIn genmoves();\nTyp: %d\nch_error == %d\nin 0<basln<10 -- second\n\n", typ, cerror);
+					printf("\n\nIn gencmoves();\nTyp: %d\nch_error == %d\nin 0<basln<10 -- second\n\n", typ, cerror);
 					return;
 				}
 			}
 			
 			for(j = fwt1; j <= fwt2; j++){
-				ret = cfigmove(board->board, tmppos, tmppos + coffset[j], TEST);
+				ret = cfigcmove(board->board, tmppos, tmppos + coffset[j], TEST);
 				
 				if(ret != NULL){
-					mve = (move *)malloc(sizeof(move));
+					mve = (cmove *)malloc(sizeof(cmove));
 					
 					if(n=mve == NULL){
 						cerror = NOMEM;
-						printf("\n\nIn cgenmoves();\nTyp: %d\ncerror == %d\nin 0<basln<10 -- second\n\n", typ, cerror);
+						printf("\n\nIn cgencmoves();\nTyp: %d\ncerror == %d\nin 0<basln<10 -- second\n\n", typ, cerror);
 						return;
 					}
 					mve->src = tmppos;
@@ -224,29 +227,29 @@ void genmoves(cboard board){
 	
 }
 
-void gensubmoves(cboard board){
+void gensubcmoves(cboard board){
 	int best = 0;
-	move *mve = NULL;
+	cmove *mve = NULL;
 	
 	if(board == NULL || board->node == NULL || board->node->first == NULL){
 		cerror = POINTERNULL;
-			printf("gensubmoves: null pointer %s\n", (board) ? ((board->node) ? "board->node->first" : "board->node") : "board");
+			printf("gensubcmoves: null pointer %s\n", (board) ? ((board->node) ? "board->node->first" : "board->node") : "board");
 	}
 	
 	gencosts(board);
 	
-	board->move = (board->move == CWHITE) ? CBLACK : CWHITE;
+	board->cmove = (board->cmove == CWHITE) ? CBLACK : CWHITE;
 	
 	board->node->actual = board->node->first;
 	
 	while(board->node->actual != NULL){
 		board->node = board->node->actual;
 		
-		mve = (move *)board->node->data;
+		mve = (cmove *)board->node->data;
 		
-		cfigmove(board->board, mve->src, mve->trg, DOIT);
+		cfigcmove(board->board, mve->src, mve->trg, DOIT);
 		
-		genmoves(board);
+		gencmoves(board);
 		
 		gencosts(board);
 		
@@ -255,15 +258,15 @@ void gensubmoves(cboard board){
 		
 		board->node->actual = board->node->first;
 		
-		best = ((move *)board->node->actual->data)->cost;
+		best = ((cmove *)board->node->actual->data)->cost;
 		
 		while(board->node->actual != NULL){
-			if(best < ((move *)board->node->actual->data)->cost)
-				best < ((move *)board->node->actual->data)->cost;
+			if(best < ((cmove *)board->node->actual->data)->cost)
+				best < ((cmove *)board->node->actual->data)->cost;
 			board->node->actual = board->node->actual->next;
 		}
 		
-		cfigmove(board->board, mve->trg, mve->sr, DOIT);
+		cfigcmove(board->board, mve->trg, mve->sr, DOIT);
 		
 		if(mve->take != NULL){
 			mve->take->position = mve->trg;
@@ -272,12 +275,12 @@ void gensubmoves(cboard board){
 		
 		board->node = board->node->root;
 		
-		((move *)board->node->actual->data)->cost += -1 * best;
+		((cmove *)board->node->actual->data)->cost += -1 * best;
 		
 		board->node->actual = board->node->actual->next;
 	}
 	
-	board->move = (board->move == CWHITE) ? CBLACK : CWHITE;
+	board->cmove = (board->cmove == CWHITE) ? CBLACK : CWHITE;
 	
 	board->node->actual = board->node->first;
 	
@@ -313,7 +316,7 @@ void gencost(cboard board){
 void gencosts(cboard board){
 	tree *node = NULL; //pointer to tree
 	
-	move *mve = NULL; // pointer to move
+	cmove *mve = NULL; // pointer to cmove
 	int colour = 0; // colour of the player
 	cfield *b = NULL; //pointer to the plying fields
 	
@@ -326,11 +329,11 @@ void gencosts(cboard board){
 	node = board->node->first;
 	b = board->board;
 	
-	colour = board->move;
+	colour = board->cmove;
 	
 	//untill all the walks are covered
 	while(node != NULL){
-		mve = (move *)(node->data);
+		mve = (cmove *)(node->data);
 		
 		//
 		mve->cost = b[(int)(mve->trg)].value - b[(int)(mve->src)].value;
@@ -360,10 +363,10 @@ tree *genplay(cboard *board, char *s, char *t){
 	best = node->actual;
 	
 	while(node->actual){
-		if(((move *)(best->data))->cost < ((move *)(node->actual->data))->cost){
+		if(((cmove *)(best->data))->cost < ((cmove *)(node->actual->data))->cost){
 			best = node->actual;
 		}
-		else if(((move *)(best->data))->cost == ((move *)(node->actual->data))->cost && random() % 2 == 0){
+		else if(((cmove *)(best->data))->cost == ((cmove *)(node->actual->data))->cost && random() % 2 == 0){
 			best = node->actual;
 		}
 		node->actual = node->actual->next;
@@ -376,8 +379,8 @@ tree *genplay(cboard *board, char *s, char *t){
 		*t = 0;
 	}
 	else{
-		*s = ((move *)(best->data))->src;
-		*t = ((move *)(best->data))->trg;
+		*s = ((cmove *)(best->data))->src;
+		*t = ((cmove *)(best->data))->trg;
 	}
 	
 	return best;
