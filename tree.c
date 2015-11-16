@@ -3,9 +3,9 @@
 
 #include"tree.h"
 
-void (*datafree)(void*) = free
+void (*datafree)(void*) = free;
 
-tree treenew(void *data){
+tree *treenew(void *data){
 	tree *node = (tree *)malloc(sizeof(tree));
 	
 	//check whether mallloc successful or not
@@ -23,6 +23,8 @@ tree treenew(void *data){
 	node->last = NULL;
 	
 	node->data = data;
+	
+	return node;
 }
 
 tree *treeaddfirst(tree *node, tree *data){
@@ -116,7 +118,7 @@ void deltree(tree *node){
 	while (node->first != NULL) {
 		deltree(node->first);
 	}
-	tree_del(node->next);
+	deltree(node->next);
 
 	free(node);
 }

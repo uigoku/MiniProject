@@ -11,11 +11,11 @@
 	(fig).cmove = (char)(mov); \
 	(fig).multiply = (char)(multi)
 
-#define figset(b, f) ((b)[(int)(f)->position].figure != NULL || \
-	(b)[(int)(f)->position].value == CH_BORDER || \
+#define figset(b, f) ((b)[(int)(f)->position].fig != NULL || \
+	(b)[(int)(f)->position].value == CBORDER || \
 	(f)->position < 0 || (f)->position > 119) ? \
-	(b)[(int)(f)->position].figure : \
-	((b)[(int)(f)->position].figure = f)
+	(b)[(int)(f)->position].fig : \
+	((b)[(int)(f)->position].fig = f)
 
 #define errprint() if (cerror!=NOERR) printerror()
 
@@ -28,7 +28,7 @@ typedef struct cfig{
 	char position;	//current or latest position
 	char cmove;
 	char multiply;	//if multiple steps are taken
-}
+}cfig;
 
 typedef struct cfield{
 	cfig *fig;
@@ -39,8 +39,10 @@ typedef struct cfield{
 typedef struct cboard{
 	cfig white[16]; //for white pieces
 	cfig black[16]; //for black pieces
-	cfig board[120]; //chessboard
+	cfield board[120]; //chessboard
 	char cmove;
+	int move;
+	int check;
 	
 	player wp;
 	player bp;
@@ -59,14 +61,14 @@ typedef enum{
 
 extern enumerror cerror;
 
-extern cboard initboard(cboard *board);
+extern cboard *initboard(cboard *board);
 
 extern void doneboard(cboard *board);
 
 extern void startgame(cboard *board);
 
-extern inline cfig* cfigcmove(cboard *board, char src, char target, int flag);
+extern inline cfig *cfigmove(cfield board[], char src, char target, int flag);
 
-extern void undocmove(cboard *board);
+extern void undomove(cboard *board);
 
 #endif

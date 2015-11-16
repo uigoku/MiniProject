@@ -67,13 +67,11 @@ cboard *initboard(cboard *board){
 	fig_init(board->white[12], CBISHOP, BISHOP, C1, DIAG, CTRUE);
 	fig_init(board->white[13], CBISHOP, BISHOP, F1, DIAG, CTRUE);
 	fig_init(board->black[12], CBLACK_BISHOP, BLACK_BISHOP, C8, DIAG, CTRUE);
-	fig_init(board->black[13], CBLACK_BISHOP, BLACK_BISHOP, CF8, CDIAG, CTRUE);
+	fig_init(board->black[13], CBLACK_BISHOP, BLACK_BISHOP, F8, DIAG, CTRUE);
 	fig_init(board->white[14], CQUEEN, QUEEN, D1, DIAG|VH, CTRUE);
 	fig_init(board->white[15], CKING, KING, E1, DIAG|VH, CFALSE);
 	fig_init(board->black[14], CBLACK_QUEEN, BLACK_QUEEN, D8, DIAG|VH, CTRUE);
 	fig_init(board->black[15], CBLACK_KING, BLACK_KING, E8, DIAG|VH, CFALSE);
-	
-	}
 	
 	//init figures
 	for(i = 0; i < 16; i++){
@@ -188,8 +186,33 @@ void doneboard(cboard *board){
 			
 		//deletes all branches
 		deltree(board->node);
-		board->node == NULL;
+		board->node = NULL;
 	}
+}
+
+
+void undoboard(cboard *board){
+	cmove *mve;
+	
+	if(board == NULL || board->node == NULL ||board->node->root == NULL){
+		cerror = POINTERNULL;
+		return;
+	}
+	
+	mve = (cmove *)board->node->data;
+	
+	cfigmove(board->board, mve->trg, mve->src, DOIT);
+	
+	if(mve->take != NULL){
+		printf("Hello");
+		
+		mve->take->position = mve->trg;
+		board->board[(int)mve->take->position].fig = mve->take;
+	}
+	
+	board->node = board->node->root;
+	delnodes(board->node);
+	
 }
 
 //Game Starts
@@ -214,24 +237,24 @@ void startgame(cboard *board){
 		
 		if(cerror == NOERR){
 			//generate all possible cmoves for a given position
-			gencmoves(board);
+			genmoves(board);
 			
 			gencost(board);
 			
-			gensubcmoves(board);
+			gensubmoves(board);
 			
 			gendangers(board);
 		}
 		
 		//will take input
 		if(board->pl == HUMAN){
-			str = getcmove(&src, &trg);
+			str = getmove(&src, &trg);
 			if(str != NULL){
 				str1 = str;
 			}
 		}
 		else{
-			board->node->actual = genplay(board &src, &trg);
+			board->node->actual = genplay(board, &src, &trg);
 			
 			if(board->node->actual != NULL){
 				found = CTRUE;
@@ -259,7 +282,7 @@ void startgame(cboard *board){
 				return;
 			}
 			else if(strcmp(str, "cmoves\n") == 0){
-				printcmoves(board);
+				printmoves(board);
 			}
 			else if(strcmp(str, "undo\n") == 0){
 				undoboard(board);
@@ -271,7 +294,7 @@ void startgame(cboard *board){
 			continue;
 		}
 		
-		if(found = CTRUE)
+		if(found != CTRUE)
 			//set first cmove
 			board->node->actual = board->node->first;
 			
@@ -290,7 +313,7 @@ void startgame(cboard *board){
 		}
 		
 		//if its invalid cmove
-		if(found = CFALSE){
+		if(found == CFALSE){
 			board->node->actual = board->node->first;
 			cerror = ILLEGAL;
 		}
@@ -298,13 +321,13 @@ void startgame(cboard *board){
 			//the cmove is set in tree
 			tree *p = NULL;
 			
-			p = remtree(board->node->actual);
+			p = rem(board->node->actual);
 			
 			//removing unnecessary nodes to save memory
 			delnodes(board->node);
 			
 			//add the cmove
-			treeaddfirst(board->first, p);
+			treeaddfirst(board->node, p);
 			
 			board->node = p;
 			
@@ -318,7 +341,7 @@ void startgame(cboard *board){
 			printerror();
 		}
 		else{
-			figcmove(board->board, src, trg, DOIT);
+			cfigmove(board->board, src, trg, DOIT);
 			
 			board->cmove = (board->cmove == CWHITE) ? CBLACK : CWHITE;
 			
@@ -340,7 +363,7 @@ void startgame(cboard *board){
 }
 
 //cmove Figure
-inline cfig *cfigcmove(cfield board[120], char src, char target, int flag){
+inline cfig *cfigmove(cfield board[120], char src, char target, int flag){
 	cfig *tmp = NULL;
 	cfig *figure = NULL;
 	cfig *ret = NULL;
@@ -349,18 +372,18 @@ inline cfig *cfigcmove(cfield board[120], char src, char target, int flag){
 	
 	cerror = NOERR;
 	
-	if(board == NULL && board[(int)src.figure == NULL){
+	if(board == NULL && board[(int)src].fig == NULL){
 		cerror = POINTERNULL;
 		return ret;
 	}
 	
-	figure = board[(int)src].figure;
+	figure = board[(int)src].fig;
 	
 	s = figure->position;
 	
 	//test if the king is not dragged to a vulnerable position
 	if(figure->type == CKING || figure->type == BLACK_KING){
-		if(board[(int)target].danger == 0 || (board[(int)target.danger < 0 && figure->type < 0) || (board[(int)target].danger > 0 && figure->type > 0)){
+		if(board[(int)target].danger == 0 || (board[(int)target].danger < 0 && figure->type < 0) || (board[(int)target].danger > 0 && figure->type > 0)){
 			tmp = figset(board, figure);
 		}
 		else{
@@ -394,39 +417,15 @@ inline cfig *cfigcmove(cfield board[120], char src, char target, int flag){
 	}
 	
 	if(flag & DOIT){
-		baord[(int)target].figure = figure;
-		board[(int)s].figure = NULL;
+		board[(int)target].fig = figure;
+		board[(int)s].fig = NULL;
 	}
 	else{
 		figure->position = s;
 		if(tmp == figure){
-			board[(int)target].figure = NULL;
+			board[(int)target].fig = NULL;
 		}
 	}
 	
 	return ret;
-}
-
-void undoboard(cboard *board){
-	cmove *mve;
-	
-	if(board == NULL || board->node == NULL ||board->node->root == NULL){
-		cerror = POINTERNULL;
-		return;
-	}
-	
-	mve = (cmove *)board->node->data;
-	
-	figcmove(board->board, mve->trg, mve->src, DOIT);
-	
-	if(mve->take != NULL){
-		printf("Hello");
-		
-		mve->take->position = mve->trg;
-		board->board[(int)mve->take->position].figure = mve->take;
-	}
-	
-	board->node = board->node->root;
-	delnodes(board->node);
-	
 }

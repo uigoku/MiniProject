@@ -2,7 +2,7 @@
 #define __CH_IO_H__
 
 #include"chess.h"
-#define CH_MAX_MOV_LEN 80
+#define MAXMOV 80
 
 extern char *getmove(char *src, char *trg);
 

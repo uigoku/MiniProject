@@ -111,7 +111,7 @@
 #define KM 4
 #define PM 8
 #define WHITE_BASE_LINE 30
-#define BLACK_LINE_80
+#define BLACK_BASE_LINE 80
 #define WHITE_CHANGE_LINE 90
 #define BLACK_CHANGE_LINE 20
 

@@ -33,7 +33,7 @@ char *getmove(char *src, char *trg){
 			//tests the limits of the source array
 			if (movestr[0] < 'a' || movestr[0] > 'h' ||
 					movestr[1] < '1' || movestr[1]> '8'){
-				cerror=CH_ILLEGAL_MOVE;
+				cerror = ILLEGAL;
 				return NULL;
 			}
 			//calculation of the index fields for the specified source coordinate
@@ -52,9 +52,7 @@ char *getmove(char *src, char *trg){
 	return NULL;
 }
 
-}
-
-void printbfp(ch_board* board){
+void printbfp(cboard *board){
 	
 	int i = 0, j = 0, count = 0;
 
@@ -72,9 +70,9 @@ void printbfp(ch_board* board){
 	for(j = 90; j > 10; j -= 10){
 		printf("%d|", (j/10) - 1);
 		for(i = 1; i < 9; i++)
-			if(board->board[j+i].figure != NULL){
-				printf("%3d |", (int)board->board[j+i].figure->type);
-				if((int)board->board[j + i].figure->type == 6 || (int)board->board[j + i].figure->type == -6)
+			if(board->board[j+i].fig != NULL){
+				printf("%3d |", (int)board->board[j+i].fig->type);
+				if((int)board->board[j + i].fig->type == 6 || (int)board->board[j + i].fig->type == -6)
 					count++;
 				}
 			else{
@@ -85,13 +83,13 @@ void printbfp(ch_board* board){
 	}
 	printf("    a    b    c    d    e    f    g    h\n");
 	if(count != 2){
-		printf("GAME OVER !!!!!!!!\n GO HOME !\N");
+		printf("GAME OVER !!!!!!!!\n GO HOME !\n");
 		exit(0);
 	}
 }
 
 void printmoves(cboard* board){
-	move *mve = NULL;
+	cmove *mve = NULL;
 
 	if(board == NULL || board->node == NULL || board->node->first == NULL || board->node->data == NULL){
 		cerror = POINTERNULL;
@@ -100,10 +98,10 @@ void printmoves(cboard* board){
 
 	board->node->actual = board->node->first;
 	while(board->node->actual != NULL){
-		mve = (move*)(board->node->actual->data);
-		printf("\nF%d,S%d,T%d,C%d,", board->board[(int)mve->src].figure->type, mve->src, mve->trg, mve->cost);
+		mve = (cmove*)(board->node->actual->data);
+		printf("\nF%d,S%d,T%d,C%d,", board->board[(int)mve->src].fig->type, mve->src, mve->trg, mve->cost);
 		if(mve->take != NULL){
-			printf("take%d; ", move->take->type);
+			printf("take%d; ", mve->take->type);
 		}
 		else
 			printf("take0; ");
@@ -143,8 +141,8 @@ void printfigval(cboard *board){
 	putchar('\n');
 	for(j = 90; j > 10; j -= 10){
 		for(i = 1; i < 9; i++)
-			(board->board[j+i].figure != NULL) ?
-				printf("%5d", (int)board->board[j+i].figure->value) :
+			(board->board[j+i].fig != NULL) ?
+				printf("%5d", (int)board->board[j+i].fig->value) :
 				printf("     ");
 		putchar('\n');
 	}
