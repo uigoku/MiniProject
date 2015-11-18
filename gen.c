@@ -1,3 +1,21 @@
+/*   This a simple version of the arcade game tron
+   Copyright (C) 2015  Aditya Karamchandani
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software Foundation,
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+   
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -63,7 +81,7 @@ void genmoves(cboard *board){
 	if(board->node->first != NULL)
 		return;
 #ifdef DEBUG
-	printf("Searching for Legal cmoves for %d\n", board->cmove);
+	printf("Searching for Legal moves for %d\n", board->cmove);
 #endif
 	figure = (board->cmove == CWHITE) ? board->white : board->black;
 	
@@ -95,13 +113,13 @@ void genmoves(cboard *board){
 						if(mve == NULL){
 							cerror = NOMEM;
 #ifdef DEBUG
-							printf("\n\nIn ch_gen_cmoves();\nLine: 68\nTyp: %d\nch_error == %d\n\n", typ, ch_error);
+							printf("\n\nIn genmoves();\nTyp: %d\nmve == NULL", typ);
 #endif
 							return;
 						}
 						
-						mve->src = figure[i].position;
-						mve->trg = figure[i].position + coffset[j] * multi;
+						mve->src = (figure[i].position);
+						mve->trg = (figure[i].position) + (coffset[j] * multi);
 						mve->change = 0;
 						mve->take = ret;
 						
